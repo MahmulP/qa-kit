@@ -39,7 +39,9 @@
 		"agents",
 		"commands",
 		"templates",
+		"assets",
 		"LICENSE",
+		"PRIVACY.md",
 		"README.md"
 	],
 	"scripts": {
