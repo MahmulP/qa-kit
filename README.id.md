@@ -129,44 +129,122 @@ Nilai yang sudah diisi tidak akan ditimpa scan berikutnya, jadi koreksi tim teta
    sama tidak diduplikasi; hitungan `seen` naik sehingga pelajaran yang sering muncul
    diprioritaskan. Entri usang di-`supersede` atau di-`forget`, bukan dihapus.
 
-## Instalasi per harness
+## Instalasi
 
-Satu sumber (`skills/`, `agents/`, `commands/`, `bin/`, `lib/`, `templates/`) dibangun
-menjadi plugin native untuk tiap harness di `dist/<harness>/` lewat `npm run build`.
-Setiap paket berdiri sendiri (CLI + MCP server ikut di dalamnya), jadi tetap jalan
-walaupun host menyalinnya ke cache.
+Syarat: Node.js 18+ dan agent yang ingin dipakai. Pilih harness Anda:
 
-| Harness | Paket | Isi | Cara pasang |
-| --- | --- | --- | --- |
-| Claude Code | `dist/claude` | `.claude-plugin/plugin.json`, skills, 3 subagent, 8 command, hooks, `.mcp.json` | `qa-kit setup claude --yes` (marketplace `MahmulP/qa-kit`) |
-| Codex (CLI & app) | `dist/codex` | `plugin.json` Agent Plugins 1.0 + `extensions.com.openai`, overlay `.codex-plugin/`, skills, `mcp.json`, hooks | `qa-kit setup codex --yes` (marketplace `.agents/plugins/marketplace.json`), lalu pasang dari Plugins Directory / `/plugins` dan *trust* hooks di `/hooks` |
-| GitHub Copilot CLI & VS Code | `dist/copilot` | Agent Plugins 1.0 (`plugin.json`, `mcp.json`, skills) + `com.github.copilot/` (agents, hooks) | `qa-kit setup copilot --yes` (`copilot plugin install`), atau marketplace `.github/plugin/marketplace.json` |
-| Cursor | `dist/cursor` | `.cursor-plugin/plugin.json`, skills, rule `.mdc`, agents, commands, hooks, `mcp.json` | `qa-kit setup cursor --yes` (salin ke `~/.cursor/plugins/local/qa-kit`), atau team marketplace dari repo (`.cursor-plugin/marketplace.json`) |
-| Antigravity (app, IDE, `agy`) | `dist/antigravity` | `plugin.json`, skills, agents, commands (jadi skill), `rules/AGENTS.md`, `hooks.json`, `mcp_config.json` | `qa-kit setup antigravity --yes` (`agy plugin install` + path MCP absolut) |
-| Gemini CLI (lama) | `dist/gemini` | `gemini-extension.json`, `GEMINI.md`, skills, command `/qa:*` (TOML), hooks | `qa-kit setup gemini --yes` (`gemini extensions link`) |
-| OpenCode | `dist/opencode` | skills, agents (subagent), command `/qa-*`, plugin JS, MCP | `qa-kit setup opencode --yes` (user) atau `--scope project` |
+### Claude Code
 
-Tanpa `--yes`, `setup` hanya menampilkan rencana. `qa-kit setup all` memproses semua
-harness yang terdeteksi di mesin ini. Tanpa clone repo:
+```bash
+claude plugin marketplace add MahmulP/qa-kit
+claude plugin install qa-kit@qa-kit
+```
+
+Cek: `/plugin` menampilkan qa-kit aktif dan `/mcp` menampilkan `plugin:qa-kit:qa-kit` connected.
+
+### Codex (CLI dan app)
+
+```bash
+codex plugin marketplace add MahmulP/qa-kit
+codex plugin add qa-kit@qa-kit
+```
+
+Di app: tambahkan marketplace `MahmulP/qa-kit` di Plugins Directory lalu install qa-kit.
+Cek: `codex plugin list` menampilkan `qa-kit@qa-kit installed, enabled` dan `codex mcp list`
+menampilkan `qa-kit`. Codex meminta Anda meninjau dan *trust* hook plugin sekali di `/hooks`.
+
+### GitHub Copilot CLI
+
+```bash
+copilot plugin marketplace add MahmulP/qa-kit
+copilot plugin install qa-kit@qa-kit
+```
+
+Cek: `copilot plugin list` menampilkan `qa-kit@qa-kit` dan `copilot mcp list` menampilkan
+`qa-kit` di bagian plugin servers.
+
+### VS Code (Agent Plugins)
+
+Tambahkan marketplace `MahmulP/qa-kit` di tampilan plugin Chat lalu install qa-kit, atau
+pasang plugin dari salinan lokal `dist/copilot`.
+
+### Cursor
+
+```bash
+npx -y github:MahmulP/qa-kit setup cursor --yes
+```
+
+Perintah ini menyalin plugin ke `~/.cursor/plugins/local/qa-kit`. Jalankan **Developer: Reload
+Window**, lalu cek **Customize** untuk skill, rule, command, hook, dan MCP server qa-kit. Untuk
+tim: Dashboard → Plugins & MCPs → Team Marketplaces → Import from Repo → repo ini.
+
+### Antigravity (app, IDE, `agy`)
+
+```bash
+npx -y github:MahmulP/qa-kit setup antigravity --yes
+```
+
+Perintah ini menjalankan `agy plugin install` dan mengarahkan MCP server ke salinan yang
+terpasang. Restart Antigravity. Cek: `agy plugin list` dan panel MCP Servers.
+
+### Gemini CLI
+
+```bash
+npx -y github:MahmulP/qa-kit setup gemini --yes
+```
+
+Gemini meminta Anda mempercayai (*trust*) folder ekstensi; jawab `y`. Cek: `gemini extensions
+list` menampilkan qa-kit beserta MCP server dan enam skill.
+
+### OpenCode
+
+```bash
+npx -y github:MahmulP/qa-kit setup opencode --yes
+```
+
+Tambahkan `--scope project` untuk memasang ke repo saat ini saja. Komentar di `opencode.jsonc`
+Anda tetap utuh. Cek: `opencode mcp list` menampilkan `qa-kit connected` dan `opencode debug
+skill` memuat skill qa-*.
+
+### Agent apa pun, skill saja
+
+```bash
+npx skills add MahmulP/qa-kit
+```
+
+Memasang enam skill lewat [skills.sh](https://skills.sh) ke agent yang Anda pilih (tanpa MCP
+server dan hook).
+
+### Semua sekaligus
 
 ```bash
 npx -y github:MahmulP/qa-kit setup all
 ```
 
-Pemasangan langsung dari GitHub per harness:
+Menampilkan rencana untuk setiap harness yang ada di mesin Anda; tambahkan `--yes` untuk
+menerapkannya. Restart tiap agent setelahnya.
+
+### Pemakaian pertama di sebuah app
+
+Buka repo web app lalu minta agent *"set up qa-kit untuk app ini"*, atau jalankan
+`/qa-kit:init` (Claude Code), `/qa-init` (Cursor, OpenCode), atau `/qa:init` (Gemini CLI). Dari
+terminal:
 
 ```bash
-claude plugin marketplace add MahmulP/qa-kit && claude plugin install qa-kit@qa-kit
-codex plugin marketplace add MahmulP/qa-kit
-copilot plugin marketplace add MahmulP/qa-kit && copilot plugin install qa-kit@qa-kit
-npx -y github:MahmulP/qa-kit setup antigravity --yes
-npx -y github:MahmulP/qa-kit setup cursor --yes
-npx -y github:MahmulP/qa-kit setup opencode --yes
-npx -y github:MahmulP/qa-kit setup gemini --yes
+npx -y github:MahmulP/qa-kit init
 ```
 
-Cursor untuk tim: Dashboard → Plugins & MCPs → Team Marketplaces → Import from Repo →
-`https://github.com/MahmulP/qa-kit`.
+Perintah ini membuat `.qa-kit/`, mendeteksi konvensi app, dan mengindeks test case-nya. Commit
+`.qa-kit/config.json` dan `.qa-kit/memory/` supaya dipakai bersama tim.
+
+### Memperbarui
+
+| Harness | Perintah |
+| --- | --- |
+| Claude Code | `claude plugin marketplace update qa-kit` lalu `claude plugin update qa-kit@qa-kit` |
+| Codex | `codex plugin marketplace upgrade` lalu `codex plugin add qa-kit@qa-kit` |
+| Copilot CLI | `copilot plugin marketplace update` lalu `copilot plugin update qa-kit` |
+| Cursor, Antigravity, Gemini, OpenCode | jalankan lagi perintah `setup … --yes` yang sama |
 
 ### Yang dilakukan tiap komponen di setiap harness
 
@@ -186,12 +264,24 @@ folder plugin sebagai proyek. Bila semuanya kosong, tool meminta argumen `root`.
 
 ### Status verifikasi
 
-| Harness | Diverifikasi di mesin ini |
-| --- | --- |
-| Claude Code | `claude plugin validate` lolos; dipasang lewat marketplace (config terisolasi) dan `claude mcp list` → `plugin:qa-kit:qa-kit ✔ Connected` |
-| Antigravity | `agy plugin validate` dan `agy plugin install` lolos (6 skill, 3 agent, 8 command, 1 MCP, 2 hook); path MCP diperbaiki oleh setup |
-| OpenCode | `opencode debug skill` memuat 6 skill, `opencode debug config` memuat 3 agent, 8 command, dan plugin; `opencode mcp list` → `qa-kit ✓ connected`; plugin JS diuji di Bun |
-| Codex, Copilot/VS Code, Cursor, Gemini | CLI-nya tidak terpasang di mesin ini. Manifest dicek terhadap spesifikasi resmi (Agent Plugins 1.0, format Cursor/Gemini) di test, MCP server dijalankan persis seperti deklarasi manifest, dan hook diuji dengan payload format masing-masing host |
+Semua jalur instalasi di bawah dijalankan dari GitHub pada config bersih yang terisolasi
+(Oktober 2026):
+
+| Harness | Versi diuji | Hasil |
+| --- | --- | --- |
+| Claude Code | terbaru | marketplace add + install; `claude mcp list` → `plugin:qa-kit:qa-kit ✔ Connected`; validator resmi lolos, termasuk `--profile directory` |
+| Codex CLI | 0.164.0 | `plugin marketplace add` + `plugin add` → installed, enabled; `codex mcp list` menampilkan `qa-kit` dengan `PLUGIN_ROOT` terisi |
+| GitHub Copilot CLI | terbaru | `plugin marketplace add` + `plugin install` → 6 skill terpasang; `copilot mcp list` menampilkan `qa-kit` sebagai plugin server |
+| Gemini CLI | 0.65.0 | `extensions install` → file konteks, MCP server `qa-kit`, 6 skill |
+| Antigravity CLI | 1.2.12 | `setup antigravity` → `agy plugin install` + `agy plugin validate` (6 skill, 3 agent, 8 command, MCP, 2 hook) |
+| OpenCode | 1.18.31 | `setup opencode` → `opencode mcp list` → `qa-kit ✓ connected`; skill, agent, command, dan plugin termuat |
+| Cursor | – | `setup cursor` menyalin plugin yang valid; pemuatan di aplikasi Cursor belum diuji |
+| VS Code | – | paket sama dengan Copilot CLI; belum diuji di dalam VS Code |
+| skills.sh | terbaru | `npx skills add MahmulP/qa-kit` memasang enam skill |
+
+Hook baru berjalan di sesi agent sungguhan; format input dan output-nya untuk setiap host
+sudah dicakup test. Laporan dari pemakaian nyata bisa dikirim lewat
+[issues](https://github.com/MahmulP/qa-kit/issues).
 
 ### Pemasangan per proyek (tanpa plugin)
 
@@ -319,8 +409,8 @@ reporter proyek.
 - Pencarian memori berbasis token (tanpa embedding); cukup untuk ratusan sampai ribuan entri.
 - Language pack bawaan: Inggris dan Indonesia. Bahasa lain lewat `catalog.vocabulary` atau
   pack baru di `lib/vocab.mjs`.
-- Format plugin tiap harness mengikuti dokumentasi per Oktober 2026. Codex, Copilot, VS Code,
-  Cursor, dan Gemini belum diuji dengan CLI aslinya di mesin ini (lihat Status verifikasi).
+- Format plugin tiap harness mengikuti dokumentasi per Oktober 2026. Aplikasi Cursor dan
+  VS Code belum diuji langsung (lihat Status verifikasi).
   Hook Copilot untuk plugin belum punya variabel path plugin yang terdokumentasi, sehingga
   hook mencoba `PLUGIN_ROOT`, `COPILOT_PLUGIN_ROOT`, lalu `CLAUDE_PLUGIN_ROOT` dan diam bila
   semuanya tidak ada.

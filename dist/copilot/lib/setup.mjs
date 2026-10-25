@@ -22,9 +22,10 @@ const has = (bin) => spawnSync(process.platform === 'win32' ? 'where' : 'which',
 const dist = (h) => join(KIT_ROOT, 'dist', h);
 const home = () => process.env.HOME || homedir();
 
+/** Runs a host CLI in the user's terminal, so its own prompts (folder trust, consent) show. */
 function run(cmd, args) {
-	const r = spawnSync(cmd, args, { encoding: 'utf8' });
-	return { ok: r.status === 0, out: `${r.stdout ?? ''}${r.stderr ?? ''}`.trim() };
+	const r = spawnSync(cmd, args, { stdio: 'inherit' });
+	return { ok: r.status === 0 };
 }
 
 function copyFresh(src, dest) {
@@ -131,9 +132,14 @@ const PLANS = {
 	}),
 	codex: () => ({
 		available: has('codex'),
-		steps: has('codex') ? [['run', 'codex', ['plugin', 'marketplace', 'add', source()]]] : [],
+		steps: has('codex')
+			? [
+					['run', 'codex', ['plugin', 'marketplace', 'add', source()]],
+					['run', 'codex', ['plugin', 'add', 'qa-kit@qa-kit']]
+				]
+			: [],
 		after:
-			'Restart Codex, open the Plugins Directory (desktop app) or /plugins (CLI), choose the "qa-kit" marketplace and install qa-kit. Review and trust its hooks in /hooks. ' +
+			'Restart Codex; check with `codex plugin list` and `codex mcp list`, and review and trust the plugin hooks in /hooks. ' +
 			(has('codex') ? '' : `Codex CLI not found: add the marketplace ${REPO} from the app.`)
 	}),
 	copilot: () => ({
@@ -168,7 +174,7 @@ const PLANS = {
 		// link keeps a checkout live; an npx copy is temporary, so install (copy) instead.
 		steps: has('gemini') ? [['run', 'gemini', ['extensions', isCheckout() ? 'link' : 'install', dist('gemini')]]] : [],
 		after: has('gemini')
-			? 'Restart Gemini CLI; check with /extensions list, /mcp, and /qa:status.'
+			? 'Gemini asks you to trust the extension folder: answer y. Restart Gemini CLI; check with `gemini extensions list`, /mcp, and /qa:status.'
 			: 'Gemini CLI not found (it was replaced by Antigravity CLI); use `setup antigravity` instead.'
 	}),
 	opencode: ({ scope, root }) => {
@@ -194,7 +200,7 @@ function execute(step) {
 	const [kind, a, b] = step;
 	if (kind === 'run') {
 		const r = run(a, b);
-		return `${r.ok ? 'ok' : 'FAILED'}: ${describe(step)}${r.out ? `\n    ${r.out.split('\n').slice(-6).join('\n    ')}` : ''}`;
+		return `${r.ok ? 'ok' : 'FAILED'}: ${describe(step)}`;
 	}
 	if (kind === 'copy') {
 		copyFresh(a, b);

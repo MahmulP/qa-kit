@@ -26,34 +26,126 @@ Zero dependencies: Node.js ≥ 18.
 
 ## Install
 
-The fastest way for every harness found on your machine:
+Requirements: Node.js 18+ and the agent you want to use. Pick your harness:
+
+### Claude Code
+
+```bash
+claude plugin marketplace add MahmulP/qa-kit
+claude plugin install qa-kit@qa-kit
+```
+
+Check: `/plugin` lists qa-kit as enabled and `/mcp` shows `plugin:qa-kit:qa-kit` connected.
+
+### Codex (CLI and app)
+
+```bash
+codex plugin marketplace add MahmulP/qa-kit
+codex plugin add qa-kit@qa-kit
+```
+
+In the app, add the marketplace `MahmulP/qa-kit` in the Plugins Directory and install qa-kit.
+Check: `codex plugin list` shows `qa-kit@qa-kit installed, enabled` and `codex mcp list`
+shows `qa-kit`. Codex asks you to review and trust the plugin hooks once in `/hooks`.
+
+### GitHub Copilot CLI
+
+```bash
+copilot plugin marketplace add MahmulP/qa-kit
+copilot plugin install qa-kit@qa-kit
+```
+
+Check: `copilot plugin list` shows `qa-kit@qa-kit` and `copilot mcp list` shows `qa-kit` under
+plugin servers.
+
+### VS Code (Agent Plugins)
+
+Add the marketplace `MahmulP/qa-kit` in the Chat plugins view and install qa-kit, or install
+the plugin from a local copy of `dist/copilot`.
+
+### Cursor
+
+```bash
+npx -y github:MahmulP/qa-kit setup cursor --yes
+```
+
+This copies the plugin to `~/.cursor/plugins/local/qa-kit`. Run **Developer: Reload Window**
+and check **Customize** for the qa-kit skills, rule, commands, hooks, and MCP server. Teams:
+Dashboard → Plugins & MCPs → Team Marketplaces → Import from Repo → this repository.
+
+### Antigravity (app, IDE, `agy`)
+
+```bash
+npx -y github:MahmulP/qa-kit setup antigravity --yes
+```
+
+This runs `agy plugin install` and points the MCP server at the installed copy. Restart
+Antigravity. Check: `agy plugin list` and the MCP Servers panel.
+
+### Gemini CLI
+
+```bash
+npx -y github:MahmulP/qa-kit setup gemini --yes
+```
+
+Gemini asks you to trust the extension folder; answer `y`. Check: `gemini extensions list`
+shows qa-kit with its MCP server and six skills.
+
+### OpenCode
+
+```bash
+npx -y github:MahmulP/qa-kit setup opencode --yes
+```
+
+Add `--scope project` to install into the current repo instead of your user config. Your
+existing `opencode.jsonc` comments are kept. Check: `opencode mcp list` shows `qa-kit
+connected` and `opencode debug skill` lists the qa-* skills.
+
+### Any agent, skills only
+
+```bash
+npx skills add MahmulP/qa-kit
+```
+
+Installs the six skills through [skills.sh](https://skills.sh) into the agents you choose
+(no MCP server or hooks).
+
+### Everything at once
 
 ```bash
 npx -y github:MahmulP/qa-kit setup all
 ```
 
-That prints the plan. Add `--yes` to apply it. Or install per harness:
+Prints the plan for every harness found on your machine; add `--yes` to apply it. Restart
+each agent afterwards.
 
-| Harness | Install | Package |
-| --- | --- | --- |
-| Claude Code | `claude plugin marketplace add MahmulP/qa-kit` then `claude plugin install qa-kit@qa-kit` | [`dist/claude`](dist/claude) |
-| Codex (CLI and app) | `codex plugin marketplace add MahmulP/qa-kit`, then install **qa-kit** from `/plugins` or the Plugins Directory, and trust its hooks in `/hooks` | [`dist/codex`](dist/codex) |
-| GitHub Copilot CLI | `copilot plugin marketplace add MahmulP/qa-kit` then `copilot plugin install qa-kit@qa-kit` | [`dist/copilot`](dist/copilot) |
-| VS Code (Agent Plugins) | Add the marketplace `MahmulP/qa-kit` and install **qa-kit**, or install the plugin from a local `dist/copilot` folder | [`dist/copilot`](dist/copilot) |
-| Cursor | `npx -y github:MahmulP/qa-kit setup cursor --yes` (copies to `~/.cursor/plugins/local/qa-kit`). Teams: Dashboard → Plugins & MCPs → Team Marketplaces → Import from Repo → this repository | [`dist/cursor`](dist/cursor) |
-| Antigravity (app, IDE, `agy`) | `npx -y github:MahmulP/qa-kit setup antigravity --yes` | [`dist/antigravity`](dist/antigravity) |
-| Gemini CLI | `npx -y github:MahmulP/qa-kit setup gemini --yes` | [`dist/gemini`](dist/gemini) |
-| OpenCode | `npx -y github:MahmulP/qa-kit setup opencode --yes` (add `--scope project` for one repo) | [`dist/opencode`](dist/opencode) |
+### First run in an app
 
-Restart the harness afterwards. Then open an app repo and ask, for example, *"set up qa-kit
-for this app"* or run `/qa-kit:init` (Claude Code), `/qa-init` (Cursor, OpenCode), or
-`/qa:init` (Gemini CLI).
+Open the repository of a web app and ask your agent *"set up qa-kit for this app"*, or run
+`/qa-kit:init` (Claude Code), `/qa-init` (Cursor, OpenCode), or `/qa:init` (Gemini CLI). From a
+terminal:
+
+```bash
+npx -y github:MahmulP/qa-kit init
+```
+
+This creates `.qa-kit/`, detects the app's conventions, and indexes its test cases. Commit
+`.qa-kit/config.json` and `.qa-kit/memory/` so the team shares them.
 
 Optional, to have the `qa-kit` CLI on your PATH:
 
 ```bash
 npm install -g github:MahmulP/qa-kit
 ```
+
+### Updating
+
+| Harness | Update |
+| --- | --- |
+| Claude Code | `claude plugin marketplace update qa-kit` then `claude plugin update qa-kit@qa-kit` |
+| Codex | `codex plugin marketplace upgrade` then `codex plugin add qa-kit@qa-kit` |
+| Copilot CLI | `copilot plugin marketplace update` then `copilot plugin update qa-kit` |
+| Cursor, Antigravity, Gemini, OpenCode | run the same `setup … --yes` command again |
 
 ### What each harness gets
 
@@ -191,12 +283,23 @@ does not accept hooks or local MCP servers. Marketplace submission steps and for
 
 ## Verification status
 
-| Harness | Verified |
-| --- | --- |
-| Claude Code | Official validator; installed from the marketplace; `claude mcp list` shows `plugin:qa-kit:qa-kit ✔ Connected` |
-| Antigravity | `agy plugin validate` and `agy plugin install` (6 skills, 3 agents, 8 commands, 1 MCP server, 2 hooks) |
-| OpenCode | `opencode debug skill`/`debug config` load all skills, agents, commands, and the plugin; `opencode mcp list` shows `qa-kit ✓ connected` |
-| Codex, Copilot / VS Code, Cursor, Gemini CLI | Manifests tested against the published specs (Agent Plugins 1.0, Cursor, Gemini); MCP servers started exactly as each manifest declares; hooks tested with each host's documented payloads. Reports from real installs are welcome. |
+Every install path below was run from GitHub on a clean, isolated config (October 2026):
+
+| Harness | Version tested | Result |
+| --- | --- | --- |
+| Claude Code | current | marketplace add + install; `claude mcp list` → `plugin:qa-kit:qa-kit ✔ Connected`; official validator passes, including `--profile directory` |
+| Codex CLI | 0.164.0 | `plugin marketplace add` + `plugin add` → installed, enabled; `codex mcp list` shows `qa-kit` with `PLUGIN_ROOT` expanded |
+| GitHub Copilot CLI | current | `plugin marketplace add` + `plugin install` → 6 skills installed; `copilot mcp list` shows `qa-kit` as a plugin server |
+| Gemini CLI | 0.65.0 | `extensions install` → context file, MCP server `qa-kit`, 6 skills |
+| Antigravity CLI | 1.2.12 | `setup antigravity` → `agy plugin install` + `agy plugin validate` (6 skills, 3 agents, 8 commands, MCP, 2 hooks) |
+| OpenCode | 1.18.31 | `setup opencode` → `opencode mcp list` → `qa-kit ✓ connected`; skills, agents, commands, and plugin loaded |
+| Cursor | – | `setup cursor` copies a valid plugin; loading inside the Cursor app not yet tested |
+| VS Code | – | same package as Copilot CLI; not yet tested inside VS Code |
+| skills.sh | latest | `npx skills add MahmulP/qa-kit` installs the six skills |
+
+Hooks need a live agent session to fire; their input and output formats are covered by the
+test suite for every host. Reports from real use are welcome in
+[issues](https://github.com/MahmulP/qa-kit/issues).
 
 ## Known limitations
 
