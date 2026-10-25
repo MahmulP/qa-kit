@@ -9,7 +9,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 for (const k of ['QA_KIT_DIR', 'QA_KIT_ROOT', 'CLAUDE_PROJECT_DIR', 'CURSOR_PROJECT_DIR', 'GEMINI_PROJECT_DIR']) delete process.env[k];
 process.env.QA_KIT_HOME = mkdtempSync(join(tmpdir(), 'qa-kit-home-'));
 
-const { build, HARNESSES } = await import('../lib/build.mjs');
+const { build, HARNESSES, PACKAGES } = await import('../lib/build.mjs');
 const { ensureStore } = await import('../lib/store.mjs');
 const { scan } = await import('../lib/scan.mjs');
 const { addOpencodeMcp, parseJsonc } = await import('../lib/setup.mjs');
@@ -60,7 +60,11 @@ function assertAgentPlugin(dir) {
 }
 
 test('every harness gets a self-contained plugin with its own manifest', () => {
-	assert.deepEqual(readdirSync(OUT).sort(), [...HARNESSES].sort());
+	assert.deepEqual(readdirSync(OUT).sort(), [...PACKAGES].sort());
+	for (const p of PACKAGES) {
+		assert.ok(existsSync(join(OUT, p, 'assets', 'icon.png')), `${p} ships the icon`);
+		assert.ok(text(p, 'README.md').split(/\s+/).length >= 40, `${p} README is long enough for directory listings`);
+	}
 	const manifests = {
 		claude: '.claude-plugin/plugin.json',
 		codex: 'plugin.json',
@@ -77,6 +81,17 @@ test('every harness gets a self-contained plugin with its own manifest', () => {
 			if (/\.(md|json|toml|mdc|js)$/.test(f) && !f.includes('/templates/')) assert.doesNotMatch(readFileSync(f, 'utf8'), /\{\{(CLI|ARGS)\}\}/, f);
 		}
 	}
+});
+
+test('Codex directory package is skills only and fits the listing limits', () => {
+	const p = json('codex-directory', 'plugin.json');
+	const iface = p.extensions['com.openai'].interface;
+	assert.equal(p.extensions['com.openai'].hooks, undefined);
+	assert.ok(!existsSync(join(OUT, 'codex-directory', 'hooks')));
+	assert.ok(!existsSync(join(OUT, 'codex-directory', 'mcp.json')));
+	assert.ok(iface.displayName.length <= 30 && iface.shortDescription.length <= 30);
+	for (const k of ['logo', 'composerIcon']) assert.ok(existsSync(join(OUT, 'codex-directory', iface[k])), k);
+	assert.ok(readdirSync(join(OUT, 'codex-directory', 'skills')).length === 6);
 });
 
 test('Agent Plugins 1.0 packages (Copilot, VS Code, Codex) follow the spec', () => {
@@ -103,7 +118,8 @@ test('host-specific formats: Claude, Cursor, Antigravity, Gemini, OpenCode', () 
 	assert.doesNotMatch(text('cursor', 'commands', 'qa-status.md'), /CLAUDE_PLUGIN_ROOT/);
 
 	const agy = json('antigravity', 'plugin.json');
-	assert.deepEqual(Object.keys(agy).sort(), ['description', 'displayName', 'name', 'suggestedPrompts', 'version']);
+	assert.deepEqual(Object.keys(agy).sort(), ['description', 'displayName', 'logo', 'name', 'suggestedPrompts', 'version']);
+	assert.ok(existsSync(join(OUT, 'antigravity', agy.logo)));
 	const agyHooks = json('antigravity', 'hooks.json');
 	assert.ok(agyHooks['qa-kit-memory'].PreInvocation[0].command.includes('./bin/qa-kit.mjs'));
 	assert.equal(agyHooks['qa-kit-record-runs'].PostToolUse[0].matcher, 'run_command');

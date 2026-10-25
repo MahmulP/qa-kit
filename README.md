@@ -185,6 +185,9 @@ agy plugin validate dist/antigravity   # official Antigravity validator
 ```
 
 `dist/` is committed because the marketplaces point at it; CI fails when it is stale.
+`dist/codex-directory` is a skills-only variant for the public Codex Plugins Directory, which
+does not accept hooks or local MCP servers. Marketplace submission steps and form drafts:
+[docs/PUBLISHING.md](docs/PUBLISHING.md). Privacy: [PRIVACY.md](PRIVACY.md).
 
 ## Verification status
 

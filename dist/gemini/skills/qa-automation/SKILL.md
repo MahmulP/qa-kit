@@ -10,8 +10,9 @@ qa-kit gives every agent the same long-term QA memory for a project. The memory 
 (tools `qa_*`). Use whichever your harness has; they do the same thing.
 
 CLI invocation: `qa-kit <command>`. If `qa-kit` is not on PATH, use the command printed at
-session start (`node "<kit>/bin/qa-kit.mjs"`) or the `kit.cli` value in
-`.qa-kit/config.json`. Pass `--root <project>` when your cwd is not the project.
+session start or by `qa_status` (`node "<kit>/bin/qa-kit.mjs"`), the `kit.cli` value in
+`.qa-kit/config.json`, or run it without installing: `npx -y github:MahmulP/qa-kit <command>`
+(needs Node.js 18+). Pass `--root <project>` when your cwd is not the project.
 
 qa-kit is app-agnostic: it assumes no framework, folder layout, team structure, catalog
 language, or naming scheme. Each app's conventions are detected into

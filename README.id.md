@@ -335,7 +335,8 @@ reporter proyek.
 ## Pengembangan
 
 Ubah sumber (`skills/`, `agents/`, `commands/`, `lib/`, `templates/`), lalu bangun ulang
-semua paket. `dist/` ikut di-commit karena marketplace menunjuk ke sana.
+semua paket. `dist/` ikut di-commit karena marketplace menunjuk ke sana. Langkah dan draft
+isian form marketplace: [docs/PUBLISHING.md](docs/PUBLISHING.md).
 
 ```bash
 npm run build                          # regenerasi dist/<harness>/

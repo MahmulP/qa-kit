@@ -1,0 +1,47 @@
+{
+	"$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+	"name": "qa-kit",
+	"version": "0.2.1",
+	"description": "QA automation for web apps: per-app and global memory that keeps learning, test-case catalogs joined with Playwright specs, authoring and triage skills, and an MCP server.",
+	"author": {
+		"name": "Machmul Pratama",
+		"url": "https://github.com/MahmulP"
+	},
+	"homepage": "https://github.com/MahmulP/qa-kit",
+	"repository": "https://github.com/MahmulP/qa-kit",
+	"license": "MIT",
+	"keywords": [
+		"qa",
+		"playwright",
+		"e2e",
+		"testing",
+		"memory",
+		"mcp",
+		"test-cases"
+	],
+	"extensions": {
+		"com.openai": {
+			"interface": {
+				"displayName": "qa-kit",
+				"shortDescription": "QA memory + Playwright skills",
+				"longDescription": "qa-kit gives Codex a long-term QA memory for each web app and a disciplined Playwright workflow: map the app, design test cases from requirements, write specs in the project conventions, triage failures, and save what was learned for the next session.",
+				"developerName": "Machmul Pratama",
+				"category": "Coding",
+				"capabilities": [
+					"Read",
+					"Write"
+				],
+				"websiteURL": "https://github.com/MahmulP/qa-kit",
+				"privacyPolicyURL": "https://github.com/MahmulP/qa-kit/blob/main/PRIVACY.md",
+				"defaultPrompt": [
+					"Show what qa-kit knows about this app.",
+					"Design test cases for the checkout page.",
+					"Why did the last Playwright run fail?"
+				],
+				"brandColor": "#10B981",
+				"composerIcon": "./assets/icon.png",
+				"logo": "./assets/icon.png"
+			}
+		}
+	}
+}

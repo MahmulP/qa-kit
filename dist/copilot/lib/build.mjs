@@ -19,6 +19,8 @@ import { readJSON, readText, writeJSON, writeText } from './util.mjs';
  */
 
 export const HARNESSES = ['claude', 'codex', 'copilot', 'cursor', 'antigravity', 'gemini', 'opencode'];
+/** Extra packages that are not installed by `setup`, e.g. directory submissions. */
+export const PACKAGES = [...HARNESSES, 'codex-directory'];
 
 const AGENT_PLUGINS_SCHEMA = 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json';
 const AGENT_PLUGINS_MCP_SCHEMA = 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json';
@@ -34,6 +36,8 @@ function meta() {
 		author: { name: 'Machmul Pratama', url: 'https://github.com/MahmulP' },
 		homepage: 'https://github.com/MahmulP/qa-kit',
 		repository: 'https://github.com/MahmulP/qa-kit',
+		privacy: 'https://github.com/MahmulP/qa-kit/blob/main/PRIVACY.md',
+		support: 'https://github.com/MahmulP/qa-kit/issues',
 		license: pkg.license ?? 'MIT',
 		keywords: ['qa', 'playwright', 'e2e', 'testing', 'memory', 'mcp', 'test-cases']
 	};
@@ -103,6 +107,25 @@ const hookCmd = (rootExpr, event, client) => `node "${rootExpr}/bin/qa-kit.mjs" 
 
 /* ------------------------------------------------------------- harnesses */
 
+/** Listing fields for Codex / ChatGPT. Display name and short description: 30 chars max. */
+function codexInterface(m) {
+	return {
+		displayName: 'qa-kit',
+		shortDescription: 'QA memory + Playwright skills',
+		longDescription:
+			'qa-kit gives Codex a long-term QA memory for each web app and a disciplined Playwright workflow: map the app, design test cases from requirements, write specs in the project conventions, triage failures, and save what was learned for the next session.',
+		developerName: m.author.name,
+		category: 'Coding',
+		capabilities: ['Read', 'Write'],
+		websiteURL: m.homepage,
+		privacyPolicyURL: m.privacy,
+		defaultPrompt: ['Show what qa-kit knows about this app.', 'Design test cases for the checkout page.', 'Why did the last Playwright run fail?'],
+		brandColor: '#10B981',
+		composerIcon: './assets/icon.png',
+		logo: './assets/icon.png'
+	};
+}
+
 const builders = {
 	claude(dest, m, src) {
 		copyRuntime(dest);
@@ -138,16 +161,7 @@ const builders = {
 	codex(dest, m) {
 		copyRuntime(dest);
 		copySkills(dest);
-		const iface = {
-			displayName: 'qa-kit',
-			shortDescription: 'QA automation memory, test-case catalogs, and Playwright skills',
-			longDescription: m.description,
-			developerName: m.author.name,
-			category: 'Coding',
-			websiteURL: m.homepage,
-			capabilities: ['Read', 'Write'],
-			defaultPrompt: ['Show what qa-kit knows about this app.', 'Design test cases for the checkout page.', 'Why did the last Playwright run fail?']
-		};
+		const iface = codexInterface(m);
 		writeJSON(join(dest, 'plugin.json'), {
 			$schema: AGENT_PLUGINS_SCHEMA,
 			name: m.name,
@@ -186,6 +200,39 @@ const builders = {
 				SessionStart: [{ hooks: [{ type: 'command', command: hookCmd(root, 'session-start', 'codex'), timeout: 20 }] }],
 				PostToolUse: [{ matcher: 'Bash', hooks: [{ type: 'command', command: hookCmd(root, 'post-bash', 'codex'), timeout: 30 }] }]
 			}
+		});
+	},
+
+	/**
+	 * Upload for the public Codex / ChatGPT Plugins Directory, which accepts neither hooks nor
+	 * local MCP servers: skills only. The skills fall back to `npx -y github:MahmulP/qa-kit`
+	 * for the CLI; the full plugin (dist/codex) keeps hooks and the MCP server.
+	 */
+	'codex-directory'(dest, m) {
+		copySkills(dest);
+		writeJSON(join(dest, 'plugin.json'), {
+			$schema: AGENT_PLUGINS_SCHEMA,
+			name: m.name,
+			version: m.version,
+			description: m.description,
+			author: m.author,
+			homepage: m.homepage,
+			repository: m.repository,
+			license: m.license,
+			keywords: m.keywords,
+			extensions: { 'com.openai': { interface: codexInterface(m) } }
+		});
+		writeJSON(join(dest, '.codex-plugin', 'plugin.json'), {
+			name: m.name,
+			version: m.version,
+			description: m.description,
+			author: m.author,
+			homepage: m.homepage,
+			repository: m.repository,
+			license: m.license,
+			keywords: m.keywords,
+			skills: './skills/',
+			interface: codexInterface(m)
 		});
 	},
 
@@ -241,7 +288,8 @@ const builders = {
 			agents: './agents/',
 			commands: './commands/',
 			hooks: './hooks/hooks.json',
-			mcpServers: './mcp.json'
+			mcpServers: './mcp.json',
+			logo: './assets/icon.png'
 		});
 		writeJSON(join(dest, 'mcp.json'), {
 			mcpServers: { 'qa-kit': { command: 'node', args: ['${CURSOR_PLUGIN_ROOT}/bin/qa-kit.mjs', 'mcp'] } }
@@ -276,6 +324,7 @@ const builders = {
 			displayName: 'qa-kit',
 			version: m.version,
 			description: m.description,
+			logo: 'assets/icon.png',
 			suggestedPrompts: ['Show what qa-kit knows about this app', 'Design test cases for the checkout page', 'Why did the last Playwright run fail?']
 		});
 		// Hooks run with the plugin directory (where hooks.json lives) as working directory.
@@ -365,20 +414,71 @@ export const QaKit = async ({ directory, worktree }) => {
 };
 `;
 
-/** Writes dist/<harness>/ for each requested harness (all by default). */
-export function build({ out = join(KIT_ROOT, 'dist'), only = HARNESSES } = {}) {
+const INSTALL = {
+	claude: ['/plugin install qa-kit --marketplace MahmulP/qa-kit', 'or: claude plugin marketplace add MahmulP/qa-kit && claude plugin install qa-kit@qa-kit'],
+	codex: ['codex plugin marketplace add MahmulP/qa-kit', 'then install qa-kit from /plugins (CLI) or the Plugins Directory (app), and trust its hooks in /hooks'],
+	'codex-directory': ['Install qa-kit from the Codex Plugins Directory.', 'For hooks and the MCP server, use the full plugin: codex plugin marketplace add MahmulP/qa-kit'],
+	copilot: ['copilot plugin marketplace add MahmulP/qa-kit && copilot plugin install qa-kit@qa-kit', 'VS Code: add the marketplace MahmulP/qa-kit (Agent Plugins) and install qa-kit'],
+	cursor: ['npx -y github:MahmulP/qa-kit setup cursor --yes', 'teams: import https://github.com/MahmulP/qa-kit as a team marketplace'],
+	antigravity: ['npx -y github:MahmulP/qa-kit setup antigravity --yes'],
+	gemini: ['npx -y github:MahmulP/qa-kit setup gemini --yes'],
+	opencode: ['npx -y github:MahmulP/qa-kit setup opencode --yes']
+};
+
+const LABEL = {
+	claude: 'Claude Code',
+	codex: 'Codex',
+	'codex-directory': 'the Codex Plugins Directory (skills only)',
+	copilot: 'GitHub Copilot CLI and VS Code (Agent Plugins 1.0)',
+	cursor: 'Cursor',
+	antigravity: 'Antigravity',
+	gemini: 'Gemini CLI',
+	opencode: 'OpenCode'
+};
+
+function packageReadme(h, m) {
+	const parts = {
+		skills: 'six skills (qa-automation, qa-explore-app, qa-test-cases, qa-playwright-author, qa-run-triage, qa-memory)',
+		mcp: 'the qa-kit MCP server with 11 tools for memory, the test-case index, coverage gaps, and run history',
+		hooks: 'hooks that load the memory digest at session start and record Playwright runs automatically'
+	};
+	const has = h === 'codex-directory' ? [parts.skills] : [parts.skills, parts.mcp, parts.hooks];
+	return `# qa-kit for ${LABEL[h]}
+
+qa-kit is a QA automation plugin for coding agents. It keeps a long-term memory for each web
+app (modules, routes, test conventions, selectors, known bugs, flaky tests, decisions) and
+global lessons shared across apps, and guides the agent through a disciplined Playwright
+workflow: map the app, design test cases from requirements, write specs in the project's own
+conventions, run only when asked, triage failures, and save what was learned.
+
+This package contains ${has.join('; ')}.
+
+## Install
+
+\`\`\`
+${INSTALL[h].join('\n')}
+\`\`\`
+
+Then open a web app repository and ask the agent to "set up qa-kit for this app".
+Everything runs locally; qa-kit sends no data anywhere (see ${m.privacy}).
+
+Generated by \`qa-kit build\` from ${m.homepage}. Do not edit this folder; change the
+sources there and rebuild. Documentation: ${m.homepage}#readme. License: ${m.license}.
+`;
+}
+
+/** Writes dist/<package>/ for each requested package (every harness by default). */
+export function build({ out = join(KIT_ROOT, 'dist'), only = PACKAGES } = {}) {
 	const m = meta();
 	const src = sources();
 	const written = [];
 	for (const h of only) {
-		if (!builders[h]) throw new Error(`Unknown harness "${h}". Harnesses: ${HARNESSES.join(', ')}`);
+		if (!builders[h]) throw new Error(`Unknown package "${h}". Packages: ${PACKAGES.join(', ')}`);
 		const dest = join(out, h);
 		if (existsSync(dest)) rmSync(dest, { recursive: true, force: true });
 		builders[h](dest, m, src);
-		writeText(
-			join(dest, 'README.md'),
-			`# qa-kit for ${h}\n\nGenerated by \`qa-kit build\` from ${m.homepage}. Do not edit; change the sources and rebuild.\nInstall instructions: ${m.homepage}#install\n`
-		);
+		cpSync(join(KIT_ROOT, 'assets', 'icon.png'), join(dest, 'assets', 'icon.png'));
+		writeText(join(dest, 'README.md'), packageReadme(h, m));
 		written.push(dest);
 	}
 	return written;

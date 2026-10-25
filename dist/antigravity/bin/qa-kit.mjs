@@ -86,8 +86,8 @@ async function main() {
 	if (cmd === 'mcp') return serve();
 	if (cmd === 'hook') return runHook(opts._[0], opts.client ?? 'claude');
 	if (cmd === 'build') {
-		const { build, HARNESSES } = await import('../lib/build.mjs');
-		const only = opts.only ? list(opts.only) : HARNESSES;
+		const { build, PACKAGES } = await import('../lib/build.mjs');
+		const only = opts.only ? list(opts.only) : PACKAGES;
 		for (const dir of build({ only, ...(opts.out ? { out: opts.out } : {}) })) print(`built ${dir}`);
 		return;
 	}

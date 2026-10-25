@@ -1,6 +1,6 @@
 {
 	"name": "qa-kit",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "QA automation plugin for coding agents (Claude Code, Codex, Copilot, VS Code, Cursor, Antigravity, Gemini CLI, OpenCode): app memory that keeps learning, test-case catalogs, Playwright authoring and triage skills, and an MCP server.",
 	"keywords": [
 		"qa",

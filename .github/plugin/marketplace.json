@@ -5,13 +5,13 @@
 	},
 	"metadata": {
 		"description": "qa-kit as an Agent Plugins 1.0 plugin (Copilot CLI, VS Code).",
-		"version": "0.2.0"
+		"version": "0.2.1"
 	},
 	"plugins": [
 		{
 			"name": "qa-kit",
 			"description": "QA automation memory, test-case catalogs, Playwright skills, and MCP tools.",
-			"version": "0.2.0",
+			"version": "0.2.1",
 			"source": "dist/copilot"
 		}
 	]

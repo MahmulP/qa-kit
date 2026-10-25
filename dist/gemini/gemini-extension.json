@@ -1,6 +1,6 @@
 {
 	"name": "qa-kit",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "QA automation for web apps: per-app and global memory that keeps learning, test-case catalogs joined with Playwright specs, authoring and triage skills, and an MCP server.",
 	"contextFileName": "GEMINI.md",
 	"mcpServers": {
