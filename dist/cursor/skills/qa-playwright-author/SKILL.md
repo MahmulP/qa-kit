@@ -14,9 +14,11 @@ qa-kit memory search "<page/module> selector"   # locators and gotchas found bef
 qa-kit cases --page <page dir>                  # rows to automate, their IDs and status
 ```
 
-Open one or two existing specs closest to the page you work on as style references
-(`qa-kit index` lists pages with the most tests). If the project's rules name a reference
-implementation, read it.
+Open one existing spec closest to the page you work on as a style reference (`qa-kit index`
+lists pages with the most tests), or the reference implementation the project's rules name.
+Read only the code the rows you automate need: the page component, its validation schema,
+and the API types of the endpoints it calls. Do not read backend source or other teams'
+folders unless a row cannot be written without them.
 
 Project conventions always win. Fall back to
 [references/playwright-patterns.md](references/playwright-patterns.md) only for what the

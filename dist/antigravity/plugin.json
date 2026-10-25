@@ -1,7 +1,7 @@
 {
 	"name": "qa-kit",
 	"displayName": "qa-kit",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "QA automation for web apps: per-app and global memory that keeps learning, test-case catalogs joined with Playwright specs, authoring and triage skills, and an MCP server.",
 	"logo": "assets/icon.png",
 	"suggestedPrompts": [

@@ -47,8 +47,10 @@ menu" or "one spec per user journey") into `conventions.md` → "Where things li
 
 ## 3. Map the area you were asked about
 
-For a whole project, do this per module (one subagent per module when available). For one
-page, only that page.
+Map one module or page at a time, in the main session. For a whole project, list the modules
+first and let the user pick; start parallel `qa-explorer` subagents (at most 3) only when the
+user asks for several modules at once. Explore only what memory does not already describe,
+and find code by targeted search instead of opening every file.
 
 | Question | Where to look (adapt to the framework) |
 | --- | --- |

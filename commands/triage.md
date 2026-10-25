@@ -7,7 +7,12 @@ Triage: {{ARGS}}
 
 1. `{{CLI}} ingest` (records the latest run if it is not recorded yet), then
    `{{CLI}} history --filter failing` and `{{CLI}} history --filter flaky`, filtered to the request.
-2. Follow the qa-run-triage skill; use the qa-triager subagent when there are many failures.
-3. Present one table: ID, class (app bug / test bug / environment / flaky / known), evidence,
+2. Group failures by feature and by error message first: failures with the same cause are
+   triaged once. Check memory and the catalog findings before reading code; known bugs need
+   no new investigation.
+3. Follow the qa-run-triage skill in this session. Use the qa-triager subagent only when
+   there are more than 15 distinct failures across 3 or more features, and ask before
+   starting it.
+4. Present one table: ID, class (app bug / test bug / environment / flaky / known), evidence,
    proposed action. Ask before changing tests or filing bugs.
-4. Save certain lessons with `{{CLI}} memory add`.
+5. Save certain lessons with `{{CLI}} memory add`.

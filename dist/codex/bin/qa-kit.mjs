@@ -22,9 +22,9 @@ Setup
 Understand
   status                       memory digest: stack, coverage, health, top lessons
   scan [--json]                project structure, Playwright config, specs, routes
-  index [--json]               rebuild test-case index (catalog rows ⨝ spec tests)
+  index [--page P] [--json]    rebuild test-case index; one line per page (catalog ⨝ specs)
   cases [text] [--id X] [--page P] [--status automated|todo|manual] [--json]
-  gaps [--page P]              todo cases, catalog/spec drift, uncovered routes
+  gaps [--page P] [--limit N]  todo cases, catalog/spec drift, uncovered routes (20 each by default)
   next-id <PREFIX>             next free case ID, e.g. next-id CHK → CHK-08
   config [get <path> | set <path> <value>]   detected conventions (.qa-kit/config.json)
   apps                         every app that uses qa-kit on this machine
@@ -132,8 +132,10 @@ async function main() {
 			ensureStore(root);
 			const idx = buildIndex(root);
 			if (opts.json) return print(idx);
+			const pages = idx.pages.filter((p) => !opts.page || p.dir.includes(opts.page));
 			print(`Index: ${JSON.stringify(idx.counts)}`);
-			for (const p of idx.pages) print(`  ${p.dir}  cases ${p.cases} (auto ${p.automated}, todo ${p.todo}, manual ${p.manual}, issues ${p.knownIssues})  tests ${p.tests}${p.catalog ? '' : '  [no catalog]'}`);
+			if (opts.page) print(`Pages matching "${opts.page}": ${pages.length}`);
+			for (const p of pages) print(`  ${p.dir}  cases ${p.cases} (auto ${p.automated}, todo ${p.todo}, manual ${p.manual}, issues ${p.knownIssues})  tests ${p.tests}${p.catalog ? '' : '  [no catalog]'}`);
 			return;
 		}
 		case 'cases': {
@@ -148,15 +150,20 @@ async function main() {
 			const idx = buildIndex(root);
 			const s = readJSON(storePaths(root).structure) ?? scan(root);
 			const inScope = (p) => !opts.page || (p ?? '').includes(opts.page);
-			const todo = idx.cases.filter((c) => c.status === 'todo' && inScope(c.page));
-			print(`Todo cases (${todo.length}):`);
-			for (const c of todo.slice(0, 60)) print(`  ${c.id} ${c.scenario} — ${c.page}`);
-			const drift = idx.drift.filter((d) => inScope(d.page));
-			print(`\nCatalog/spec drift (${drift.length}):`);
-			for (const d of drift.slice(0, 60)) print(`  ${d.type}${d.id ? ' ' + d.id : ''}: ${d.detail} (${d.page})`);
-			const routes = s.routes.items.filter((r) => !r.covered && inScope(r.path));
-			print(`\nRoutes not referenced by any test (${routes.length}, heuristic):`);
-			for (const r of routes.slice(0, 80)) print(`  ${r.path}`);
+			// Bounded by default so agents can read it cheaply; --limit 0 prints everything.
+			const limit = opts.limit === undefined ? 20 : Number(opts.limit) || Infinity;
+			const more = (n) => (n > limit ? `  … ${n - limit} more (--limit 0 for all)` : null);
+			const section = (title, rows, fmt) => {
+				print(`${title} (${rows.length}):`);
+				for (const r of rows.slice(0, limit)) print(fmt(r));
+				const m = more(rows.length);
+				if (m) print(m);
+			};
+			section('Todo cases', idx.cases.filter((c) => c.status === 'todo' && inScope(c.page)), (c) => `  ${c.id} ${c.scenario} — ${c.page}`);
+			print('');
+			section('Catalog/spec drift', idx.drift.filter((d) => inScope(d.page)), (d) => `  ${d.type}${d.id ? ' ' + d.id : ''}: ${d.detail} (${d.page})`);
+			print('');
+			section('Routes not referenced by any test (heuristic)', s.routes.items.filter((r) => !r.covered && inScope(r.path)), (r) => `  ${r.path}`);
 			return;
 		}
 		case 'next-id':

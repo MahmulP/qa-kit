@@ -73,11 +73,30 @@ Pick the entry point from the request:
   lessons that would have saved you time today (see `qa-memory`). Say in your final message
   what you saved.
 
+## Work budget: fast and cheap by default
+
+- Work in the main session. One page, one module, or one failing feature never needs a
+  subagent.
+- A request without a clear scope ("write tests", "explore the app", a whole module) gets a
+  short plan first: the pages or modules with their todo and gap counts from `qa-kit gaps`.
+  Ask which to do before reading code.
+- Start subagents only when the user named 3 or more pages or modules and agreed to run them
+  in parallel; at most 3 at a time. Brief each one with what you already know (page folder,
+  case IDs, fixtures import, a reference spec, empty memory sections) so it does not
+  rediscover it.
+- Recall with the compact commands (`status`, `cases --page`, `gaps --page`,
+  `memory search`) instead of opening catalogs and specs one by one. Read conventions once
+  per session.
+- Read only the code the current rows need: the page component, its schema, and the API
+  types of the endpoints it calls (searched, not read whole). Skip backend source, other
+  teams' folders, and unrelated modules unless a row cannot be done without them.
+- Never rewrite tests that already exist; only add what is missing.
+
 ## Subagents (Claude Code plugin; other harnesses can follow the same briefs)
 
-- `qa-explorer`: read-only mapping of a module/page into memory.
+- `qa-explorer`: read-only mapping of one module or page into memory.
 - `qa-author`: catalog + spec for one page.
-- `qa-triager`: analyse a failed run, classify, propose fixes and bug reports.
+- `qa-triager`: analyse a large failed run, classify, propose fixes and bug reports.
 
-Run them in parallel for independent pages; each one reads memory first and saves lessons
+Use them only within the work budget above; each one reads memory first and saves lessons
 at the end.

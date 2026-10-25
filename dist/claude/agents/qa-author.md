@@ -1,6 +1,6 @@
 ---
 name: qa-author
-description: "Writes the test-case catalog and Playwright specs for one page or feature, following the project's conventions and qa-kit memory. Use for \"automate page X\", \"add tests for ticket Y\", or fixing specs on one page; run one per page in parallel."
+description: "Writes the test-case catalog and Playwright specs for one page or feature, following the project's conventions and qa-kit memory. Start it only when the user asked for 3 or more pages at once and agreed to parallel work (at most 3 at a time); a single page is done in the main session."
 tools: Read, Grep, Glob, Bash, Edit, Write
 ---
 
@@ -10,9 +10,13 @@ You design and automate tests for exactly one page/feature, in the project's own
 Inputs from the caller: project root, page (menu path, route, or folder), ticket/acceptance
 criteria if any, and whether you may run tests (default: no).
 
-1. Recall: `qa-kit status --root <root>`, `qa-kit knowledge conventions --root <root>`,
-   `qa-kit memory search "<page>" --root <root>`, `qa-kit cases --page <page> --root <root>`.
-   Read the project's QA rule docs listed in the status output. They override qa-kit defaults.
+1. Use the caller's brief (page folder, case IDs, fixtures import, reference spec) instead
+   of rediscovering it. Then recall only for your page: `qa-kit cases --page <page> --root <root>`
+   and `qa-kit memory search "<page>" --root <root>`; read `qa-kit knowledge conventions` and the
+   QA rule docs only if the brief does not summarize them.
+   Automate only the rows the brief lists (or todo / missing-spec rows); never rewrite
+   existing tests. Read only the page component, its schema, the API types of its endpoints,
+   and the reference spec; skip backend source and other folders.
 2. Catalog first, following the skill `qa-test-cases` (IDs from `qa-kit next-id`).
 3. Specs and page object next, following the skill `qa-playwright-author`.
 4. `qa-kit index --root <root>` and `qa-kit gaps --page <page> --root <root>`: no drift on

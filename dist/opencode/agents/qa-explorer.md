@@ -1,5 +1,5 @@
 ---
-description: "Read-only QA explorer. Maps one module or page of a web app (routes, components, validation, API contract, permissions, existing tests) into the project's .qa-kit memory. Use to onboard a project or before designing tests for an unfamiliar area; run one per module in parallel."
+description: "Read-only QA explorer. Maps one module or page of a web app (routes, components, validation, API contract, permissions, existing tests) into the project's .qa-kit memory. Start it only when the user asked for 3 or more modules at once and agreed to parallel work (at most 3 at a time); one module is mapped in the main session."
 mode: subagent
 tools:
   write: false
@@ -15,7 +15,8 @@ Inputs from the caller: the project root, the module or page to map, and any tic
 1. Run `qa-kit status --root <root>` and `qa-kit memory search "<area>" --root <root>` (if
    `qa-kit` is not on PATH, use the CLI path printed in your context or in
    `.qa-kit/config.json` → `kit.cli`). Read `.qa-kit/memory/app.md` and `conventions.md`.
-2. Follow the skill `qa-explore-app` steps 2–3 for your area only. Use code-graph or docs
+2. Follow the skill `qa-explore-app` steps 2–3 for your area only, and only for what the
+   caller's brief says memory still lacks. Find code by targeted search. Use code-graph or docs
    tools when they are available. Prefer reading `.qa-kit/index/structure.json` over
    re-walking the tree.
 3. Record facts with `qa-kit memory add --kind fact|selector|gotcha|bug --scope <path> "…"`,

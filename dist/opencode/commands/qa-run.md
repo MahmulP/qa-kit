@@ -10,7 +10,9 @@ The user asked to run: $ARGUMENTS
    `qa-kit run --dry-run …` if anything is ambiguous.
 2. Run it with `qa-kit run [--script <script>] -- <args>` (run in the background if it may take
    more than two minutes). Do not add data-mutation switches or change the target environment.
-3. Triage every failure with the qa-run-triage skill (qa-triager subagent for many failures).
+3. Triage the failures in this session with the qa-run-triage skill, grouped by feature and
+   error so the same cause is analysed once. Use the qa-triager subagent only for more than 15
+   distinct failures across 3 or more features, and ask first.
 4. Update catalogs for confirmed bugs and save lessons with `qa-kit memory add`.
 
 If `qa-kit` is not on PATH, use the CLI command that the `qa_status` tool prints.
