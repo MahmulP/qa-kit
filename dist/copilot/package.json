@@ -1,0 +1,52 @@
+{
+	"name": "qa-kit",
+	"version": "0.2.0",
+	"description": "QA automation plugin for coding agents (Claude Code, Codex, Copilot, VS Code, Cursor, Antigravity, Gemini CLI, OpenCode): app memory that keeps learning, test-case catalogs, Playwright authoring and triage skills, and an MCP server.",
+	"keywords": [
+		"qa",
+		"playwright",
+		"e2e",
+		"testing",
+		"test-cases",
+		"agent-skills",
+		"mcp",
+		"claude-code",
+		"codex",
+		"copilot",
+		"cursor",
+		"antigravity",
+		"opencode",
+		"agent-plugins"
+	],
+	"homepage": "https://github.com/MahmulP/qa-kit#readme",
+	"bugs": {
+		"url": "https://github.com/MahmulP/qa-kit/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/MahmulP/qa-kit.git"
+	},
+	"license": "MIT",
+	"author": "Machmul Pratama (https://github.com/MahmulP)",
+	"type": "module",
+	"bin": {
+		"qa-kit": "bin/qa-kit.mjs"
+	},
+	"files": [
+		"bin",
+		"lib",
+		"skills",
+		"agents",
+		"commands",
+		"templates",
+		"LICENSE",
+		"README.md"
+	],
+	"scripts": {
+		"build": "node bin/qa-kit.mjs build",
+		"test": "node --test test/*.test.mjs"
+	},
+	"engines": {
+		"node": ">=18"
+	}
+}

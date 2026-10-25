@@ -1,0 +1,11 @@
+{
+	"mcpServers": {
+		"qa-kit": {
+			"command": "node",
+			"args": [
+				"${CURSOR_PLUGIN_ROOT}/bin/qa-kit.mjs",
+				"mcp"
+			]
+		}
+	}
+}

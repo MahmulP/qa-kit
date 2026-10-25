@@ -1,0 +1,19 @@
+{
+	"version": 1,
+	"hooks": {
+		"sessionStart": [
+			{
+				"type": "command",
+				"bash": "d=\"${PLUGIN_ROOT:-${COPILOT_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-.}}}\"; [ -f \"$d/bin/qa-kit.mjs\" ] && node \"$d/bin/qa-kit.mjs\" hook session-start --client copilot || true",
+				"timeoutSec": 20
+			}
+		],
+		"postToolUse": [
+			{
+				"type": "command",
+				"bash": "d=\"${PLUGIN_ROOT:-${COPILOT_PLUGIN_ROOT:-${CLAUDE_PLUGIN_ROOT:-.}}}\"; [ -f \"$d/bin/qa-kit.mjs\" ] && node \"$d/bin/qa-kit.mjs\" hook post-bash --client copilot || true",
+				"timeoutSec": 30
+			}
+		]
+	}
+}

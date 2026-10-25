@@ -1,0 +1,2 @@
+{ "name": "next-app", "scripts": { "dev": "next dev", "e2e": "playwright test", "e2e:admin": "playwright test --project=admin", "e2e:store": "playwright test --project=storefront", "e2e:ui": "playwright test --ui" },
+  "devDependencies": { "next": "15.0.0", "react": "19.0.0", "@playwright/test": "^1.50.0" } }

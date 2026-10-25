@@ -1,0 +1,13 @@
+{
+	"mcp": {
+		"qa-kit": {
+			"type": "local",
+			"command": [
+				"node",
+				"{{KIT}}/bin/qa-kit.mjs",
+				"mcp"
+			],
+			"enabled": true
+		}
+	}
+}

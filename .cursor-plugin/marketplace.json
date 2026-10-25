@@ -1,0 +1,16 @@
+{
+	"name": "qa-kit",
+	"owner": {
+		"name": "Machmul Pratama"
+	},
+	"metadata": {
+		"description": "qa-kit for Cursor: QA automation memory, test-case catalogs, Playwright skills."
+	},
+	"plugins": [
+		{
+			"name": "qa-kit",
+			"source": "dist/cursor",
+			"description": "QA automation memory, test-case catalogs, Playwright skills, hooks, and MCP tools."
+		}
+	]
+}

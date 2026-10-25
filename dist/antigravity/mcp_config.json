@@ -1,0 +1,11 @@
+{
+	"mcpServers": {
+		"qa-kit": {
+			"command": "node",
+			"args": [
+				"./bin/qa-kit.mjs",
+				"mcp"
+			]
+		}
+	}
+}

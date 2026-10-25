@@ -1,0 +1,12 @@
+{
+	"name": "qa-kit",
+	"interface": { "displayName": "qa-kit" },
+	"plugins": [
+		{
+			"name": "qa-kit",
+			"source": { "source": "local", "path": "./dist/codex" },
+			"policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+			"category": "Coding"
+		}
+	]
+}

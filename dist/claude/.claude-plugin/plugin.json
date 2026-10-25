@@ -1,0 +1,21 @@
+{
+	"name": "qa-kit",
+	"version": "0.2.0",
+	"description": "QA automation for web apps: per-app and global memory that keeps learning, test-case catalogs joined with Playwright specs, authoring and triage skills, and an MCP server.",
+	"author": {
+		"name": "Machmul Pratama",
+		"url": "https://github.com/MahmulP"
+	},
+	"homepage": "https://github.com/MahmulP/qa-kit",
+	"repository": "https://github.com/MahmulP/qa-kit",
+	"license": "MIT",
+	"keywords": [
+		"qa",
+		"playwright",
+		"e2e",
+		"testing",
+		"memory",
+		"mcp",
+		"test-cases"
+	]
+}

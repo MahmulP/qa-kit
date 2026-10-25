@@ -1,0 +1,27 @@
+{
+	"hooks": {
+		"SessionStart": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"${CLAUDE_PLUGIN_ROOT}/bin/qa-kit.mjs\" hook session-start --client claude",
+						"timeout": 20
+					}
+				]
+			}
+		],
+		"PostToolUse": [
+			{
+				"matcher": "Bash",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"${CLAUDE_PLUGIN_ROOT}/bin/qa-kit.mjs\" hook post-bash --client claude",
+						"timeout": 30
+					}
+				]
+			}
+		]
+	}
+}

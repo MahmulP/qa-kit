@@ -1,0 +1,27 @@
+{
+	"hooks": {
+		"SessionStart": [
+			{
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"${extensionPath}/bin/qa-kit.mjs\" hook session-start --client gemini",
+						"timeout": 20000
+					}
+				]
+			}
+		],
+		"AfterTool": [
+			{
+				"matcher": "run_shell_command",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"${extensionPath}/bin/qa-kit.mjs\" hook post-bash --client gemini",
+						"timeout": 30000
+					}
+				]
+			}
+		]
+	}
+}

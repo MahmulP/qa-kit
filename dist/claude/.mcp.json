@@ -1,0 +1,11 @@
+{
+	"mcpServers": {
+		"qa-kit": {
+			"command": "node",
+			"args": [
+				"${CLAUDE_PLUGIN_ROOT}/bin/qa-kit.mjs",
+				"mcp"
+			]
+		}
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"name": "qa-kit",
+	"description": "qa-kit: QA automation memory, test-case catalogs, Playwright skills, hooks, and MCP tools for coding agents.",
+	"owner": {
+		"name": "Machmul Pratama"
+	},
+	"plugins": [
+		{
+			"name": "qa-kit",
+			"source": "./dist/claude",
+			"description": "QA automation memory, test-case catalogs, Playwright skills, hooks, and MCP tools.",
+			"homepage": "https://github.com/MahmulP/qa-kit"
+		}
+	]
+}

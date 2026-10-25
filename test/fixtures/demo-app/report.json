@@ -1,0 +1,11 @@
+{
+  "config": { "rootDir": "__ROOT__/e2e" },
+  "suites": [{ "title": "shop/cart/cart.spec.ts", "file": "shop/cart/cart.spec.ts", "specs": [], "suites": [{
+    "title": "Shop › Cart", "file": "shop/cart/cart.spec.ts",
+    "specs": [
+      { "title": "CRT-01 cart loads", "file": "shop/cart/cart.spec.ts", "line": 4, "tests": [{ "projectName": "chromium", "status": "expected", "expectedStatus": "passed", "results": [{ "status": "passed", "duration": 900 }] }] },
+      { "title": "CRT-02 remove item", "file": "shop/cart/cart.spec.ts", "line": 9, "tests": [{ "projectName": "chromium", "status": "unexpected", "expectedStatus": "passed", "annotations": [{ "type": "issue", "description": "BUG-7" }], "results": [{ "status": "failed", "duration": 1500, "errors": [{ "message": "\u001b[31mExpected row to be hidden\u001b[39m" }] }] }] },
+      { "title": "CRT-03 apply coupon", "file": "shop/cart/cart.spec.ts", "line": 13, "tests": [{ "projectName": "chromium", "status": "flaky", "expectedStatus": "passed", "results": [{ "status": "failed", "duration": 700 }, { "status": "passed", "duration": 600 }] }] }
+    ]
+  }] }]
+}

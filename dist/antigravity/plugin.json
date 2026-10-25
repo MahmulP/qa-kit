@@ -1,0 +1,11 @@
+{
+	"name": "qa-kit",
+	"displayName": "qa-kit",
+	"version": "0.2.0",
+	"description": "QA automation for web apps: per-app and global memory that keeps learning, test-case catalogs joined with Playwright specs, authoring and triage skills, and an MCP server.",
+	"suggestedPrompts": [
+		"Show what qa-kit knows about this app",
+		"Design test cases for the checkout page",
+		"Why did the last Playwright run fail?"
+	]
+}

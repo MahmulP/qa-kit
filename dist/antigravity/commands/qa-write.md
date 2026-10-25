@@ -1,0 +1,18 @@
+---
+description: Automate test cases as Playwright specs for a page (catalog first, project conventions, no run unless asked)
+argument-hint: <page/menu/route or case IDs> [run]
+---
+
+
+Automate tests for: $ARGUMENTS
+
+1. Recall: `qa-kit status`, `qa-kit knowledge conventions`, `qa-kit memory search "<page>"`,
+   `qa-kit cases --page <page>`.
+2. If the page has no catalog or the rows are missing, do the qa-test-cases skill first.
+3. Write specs with the qa-playwright-author skill. For several pages, run one qa-author
+   subagent per page in parallel.
+4. `qa-kit index` and `qa-kit gaps --page <page>` must show no drift for the page.
+5. Run tests only if the request says so ("run"), via `qa-kit run` at the narrowest scope, twice.
+6. Save lessons with `qa-kit memory add` and list their IDs in your answer.
+
+If `qa-kit` is not on PATH, use the CLI command that the `qa_status` tool prints.

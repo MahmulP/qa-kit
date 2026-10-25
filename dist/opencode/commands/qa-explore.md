@@ -1,0 +1,13 @@
+---
+description: Map the app (or one module/page) for QA and record the knowledge in qa-kit memory
+---
+
+
+Use the qa-explore-app skill for: $ARGUMENTS (empty means the whole app).
+
+- Start with `qa-kit status` and `qa-kit memory search "$ARGUMENTS"`.
+- For the whole app or several modules, run one qa-explorer subagent per module in parallel,
+  then merge their proposed additions into `.qa-kit/memory/app.md` and `glossary.md` yourself.
+- Finish with `qa-kit gaps` for the explored area and a short list of the riskiest uncovered pages.
+
+If `qa-kit` is not on PATH, use the CLI command that the `qa_status` tool prints.

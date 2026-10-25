@@ -1,0 +1,17 @@
+{
+	"version": 1,
+	"hooks": {
+		"sessionStart": [
+			{
+				"command": "node \"${CURSOR_PLUGIN_ROOT:-.}/bin/qa-kit.mjs\" hook session-start --client cursor",
+				"timeout": 20
+			}
+		],
+		"afterShellExecution": [
+			{
+				"command": "node \"${CURSOR_PLUGIN_ROOT:-.}/bin/qa-kit.mjs\" hook post-bash --client cursor",
+				"timeout": 30
+			}
+		]
+	}
+}

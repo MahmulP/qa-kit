@@ -1,0 +1,25 @@
+{
+	"qa-kit-memory": {
+		"PreInvocation": [
+			{
+				"type": "command",
+				"command": "node \"./bin/qa-kit.mjs\" hook session-start --client antigravity",
+				"timeout": 20
+			}
+		]
+	},
+	"qa-kit-record-runs": {
+		"PostToolUse": [
+			{
+				"matcher": "run_command",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "node \"./bin/qa-kit.mjs\" hook post-bash --client antigravity",
+						"timeout": 30
+					}
+				]
+			}
+		]
+	}
+}

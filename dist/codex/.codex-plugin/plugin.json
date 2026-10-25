@@ -1,0 +1,41 @@
+{
+	"name": "qa-kit",
+	"version": "0.2.0",
+	"description": "QA automation for web apps: per-app and global memory that keeps learning, test-case catalogs joined with Playwright specs, authoring and triage skills, and an MCP server.",
+	"author": {
+		"name": "Machmul Pratama",
+		"url": "https://github.com/MahmulP"
+	},
+	"homepage": "https://github.com/MahmulP/qa-kit",
+	"repository": "https://github.com/MahmulP/qa-kit",
+	"license": "MIT",
+	"keywords": [
+		"qa",
+		"playwright",
+		"e2e",
+		"testing",
+		"memory",
+		"mcp",
+		"test-cases"
+	],
+	"skills": "./skills/",
+	"mcpServers": "./mcp.json",
+	"hooks": "./hooks/hooks.json",
+	"interface": {
+		"displayName": "qa-kit",
+		"shortDescription": "QA automation memory, test-case catalogs, and Playwright skills",
+		"longDescription": "QA automation for web apps: per-app and global memory that keeps learning, test-case catalogs joined with Playwright specs, authoring and triage skills, and an MCP server.",
+		"developerName": "Machmul Pratama",
+		"category": "Coding",
+		"websiteURL": "https://github.com/MahmulP/qa-kit",
+		"capabilities": [
+			"Read",
+			"Write"
+		],
+		"defaultPrompt": [
+			"Show what qa-kit knows about this app.",
+			"Design test cases for the checkout page.",
+			"Why did the last Playwright run fail?"
+		]
+	}
+}
